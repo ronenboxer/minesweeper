@@ -1,0 +1,65 @@
+body {
+    text-align: center;
+}
+
+/* .board {
+    text-align: center;
+    margin: auto;
+} */
+
+
+table {
+    text-align: center;
+    margin: auto;
+}
+
+tr,td{
+    height: 32px;
+    width: 30px;
+    background-color: beige;
+    transition: opacity 500ms;
+}
+
+.safe {
+    background-color: rgb(154, 198, 154);
+}
+
+.mine {
+    background-color: rgb(234, 116, 116);
+}
+
+.mine-marked {
+    background-color: rgb(226, 226, 123);
+}
+
+.time {
+    height: 25px
+}
+
+span iconify-icon{
+    margin-left: 5px;
+}
+
+#hint iconify-icon, #safe iconify-icon {
+    cursor: pointer;
+}
+
+#hint iconify-icon:hover {
+    color: rgb(236, 213, 5);
+}
+
+#hint iconify-icon:active {
+    color: rgb(245, 237, 166);
+}
+
+li {
+    width: 200px;
+    height: 32px;
+    padding: 5px;
+}
+
+ul {
+    /* display: inline-block; */
+    text-align: left;
+    position: absolute;
+}
