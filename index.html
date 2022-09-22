@@ -7,17 +7,35 @@
 
 <body onload="initGame()">
     <h1>Mine-Sweep</h1>
-    <div class="control"><button onclick="initGame()"></button></div>
-    <div class="time"></div>
+    <div class="control">
+        <button onclick="initGame(gGame.level)"></button>
+        <br>
+        <div class="time"></div>
+        <div class="bttns-container">
+            <button onclick="onSetLevel('easy')">easy</button>
+            <button onclick="onSetLevel('medium')">medium</button>
+            <button onclick="onSetLevel('hard')">hard</button>
+            <br>
+            <button onclick="restoreLastState()">undo</button>
+            <button id="mega-hint" onclick="onMegaHint()">mega hint</button>
+            <button onclick="onSevenBoom()">7 BOOM</button>
+            <br>
+            <button id="manual" onclick=" onManualPosition(this)">position myself</button>
+        </div>
+        <!-- <button onclick="exterminate()" id="exterminate">
+            <iconify-icon inline icon="fa6-solid:gun" width="30"></iconify-icon>
+        </button> -->
+    </div>
     <div class="game-area">
         <ul>
             <li id="life">lives: <span></span></li>
             <li id="hint">hints: <span></span></li>
-            <li id="safe">Safe Clicks: <span></span></li>
-            <li id="best-score">Best score: <span></span></li>
+            <li id="safe">safe clicks: <span></span></li>
+            <li id="best-score">best time: <span></span></li>
         </ul>
         <table class="board"></table>
     </div>
+    <h2>made by ronen boxer</h2>
     <script src="js/utils.js"></script>
     <script src="js/game.js"></script>
     <script src="js/cell.js"></script>
