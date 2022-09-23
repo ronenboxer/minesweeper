@@ -5,58 +5,70 @@ function cellClicked(elCell, row, col) {
     if (isProccessing) return
 
     // for manual position mode
-    if (gGame.manualPositionOn) {
+    if (isManualPositionOn) {
         positionMine(row, col)
         return
     }
 
-    //model
-    const currCell = gBoard[row][col]
-    if ((currCell.isMarked && !currCell.isShown) || currCell.isUnkown) return // can't press illegal cells
-
     // to check if a regular game has its first click to randomize mines
     if (!gGame.shownCount && !is7Boom && !gGame.isOn) {
-        if (!gGame.startManually) getRandomMinesPos({ row: row, col: col })
+        if (!isManualPositionOn) getRandomMinesPos(row, col)
         gGame.isOn = true
         gGame.startTime = Date.now()
         timerIntervalId = setInterval(renderTime, 1000)
     } else if (!gGame.isOn) return
 
-    // pushes to stateStck
-    saveCurrState()
-
-    // if player asked for mega hint, select border cells instead of click them
-    if (gGame.isMegaHint) {
-        elCell.classList.add('mega-hint-cell')
+    // if player used mega hint, select border cells instead of reveal them 
+    // if not, check to see if player used regular hint
+    if (gGame.isMegaHintOn && gGame.mega) {
+        elCell.classList.toggle('selected-cell')
         if (!gGame.megaHintFirstPos) gGame.megaHintFirstPos = { row: row, col: col }
         else showMegaHint(gGame.megaHintFirstPos, { row: row, col: col })
         return
+    } else if (gGame.isHitOn) {
+        useUtility('hint', { row: row, col: col })
+        gGame.isHitOn = false
+        return
     }
 
-    // update model and DOM
-    if (gBoard[row][col].isMine) {
-        if (!gGame.life) revealAllMines()
-        else revealMine(elCell, row, col)
-    } else {
-        expandShown(gBoard, elCell, row, col)
-        const minesAroundCount = gBoard[row][col].minesAroundCount
-        const flagsAroundCount = getNegsCountByKey(gBoard, { row: row, col: col }, 'isMarked')
-        if (minesAroundCount && minesAroundCount === flagsAroundCount) {
-            showAllNegs(gBoard, row, col)
-        }
-    }
-
-    checkGameOver()
-}
-
-// when user right-clicks. they can make an unsafe cell makred with a flag, a `?` or delete the mark
-function cellMarked(elCell, row, col) {
-    if (isProccessing) return
-
+    // pushes to stateStck
     saveCurrState()
 
     const currCell = gBoard[row][col]
-    if (!gGame.isOn || currCell.isShown) return
+    // to avoid revealing marked cells
+    if (currCell.isMarked || currCell.isUnkown) return
+
+    // if player stepped on mine
+    if (gBoard[row][col].isMine) {
+        // if player has no more life left, reveal all mines and end game
+        if (!gGame.life) revealAllMines()
+        // if they have more life, update model
+        else revealMine(elCell, row, col)
+        // if cell is not mine, player can see its content.
+    } else {
+        const minesAroundCount = gBoard[row][col].minesAroundCount
+        const flagsAroundCount = getNegsCountByKey(gBoard, { row: row, col: col }, 'isMarked')
+        // if the nuumber of the cell is equal to the number of flaged negigbours, show all neighbour
+        if (minesAroundCount &&
+            minesAroundCount === flagsAroundCount) showAllNegs(gBoard, row, col)
+        else expandShown(gBoard, elCell, row, col)
+    }
+
+    renderFlagsLeft()
+    checkGameOver()
+}
+
+
+
+// when user right-clicks. they can make an unrevealed cell be makred with a flag, a `?` or delete the mark
+function cellMarked(elCell, row, col) {
+    if (isProccessing) return
+    const flagsLeft = gGame.minePos.length - gGame.markedCount
+    const currCell = gBoard[row][col]
+    if (!gGame.isOn || currCell.isShown || flagsLeft < 0) return
+
+    saveCurrState()
+
     if (currCell.isMarked) {
         //model
         currCell.isMarked = false
@@ -71,27 +83,35 @@ function cellMarked(elCell, row, col) {
         renderValue(elCell, '')
 
     } else {
+        if (flagsLeft <= 0) return
         //model
         gGame.markedCount++
         currCell.isMarked = true
         //DOM
         renderImg(elCell, FLAG_IMG)
     }
+
+    renderFlagsLeft()
     checkGameOver()
 }
 
+
+
+
 // a function that reveals neighbours cells with 0 mined neighbours
 function expandShown(board, elCell, row, col) {
-    // cant check marked cells
-    if (board[row][col].isMarked || board[row][col].isUnkown) return
+    const currCell = gBoard[row][col]
 
-    // checks amount of mines around
-    const minesAroundCount = board[row][col].minesAroundCount
-    if (!board[row][col].isShown) stepOnCell(board, elCell, row, col) //model
+    // cant check marked cells
+    if (currCell.isMarked || currCell.isUnkown) return
+
+    // gets amount of mines around
+    const minesCount = currCell.minesAroundCount
+    if (!currCell.isShown) stepOnCell(board, elCell, row, col) //model
 
     // if there are mines around, stop looking for neighbours
-    if (minesAroundCount) {
-        renderValue(elCell, minesAroundCount) //DOM - shows numbers bigger than 0
+    if (minesCount) {
+        renderValue(elCell, minesCount) //DOM - shows numbers bigger than 0
         return
     }
 
@@ -108,28 +128,29 @@ function expandShown(board, elCell, row, col) {
     }
 }
 
-// updates DOM
+
+
+// updates DOM and model
 function stepOnCell(board, elCell, row, col) {
     elCell.classList.add('safe')
     board[row][col].isShown = true
     gGame.shownCount++
 }
 
-// toggles between adding or removing seleced mine cell on manual mode
+
+
+// toggles between adding or removing seleced cell as mine on manual mode
 function positionMine(row, col) {
-    if (gGame.manualPositionOn) {
-        const currMine = { row: row, col: col }
-        const elCell = getElementByPos(row,col)
-        const mineIndex = getIndex(currMine, gGame.minePos)
-        if (mineIndex === -1) {
-            gGame.minePos.push(currMine)
-            gBoard[row][col].isMine = true
-            elCell.classList.add('mine')
-        }
-        else {
-            gGame.minePos.splice(mineIndex, 1)[0]
-            gBoard[row][col].isMine = false
-            elCell.classList.remove('mine')
-        }
-    }
+    const currMine = { row: row, col: col }
+    const elCell = getElementByPos(row, col)
+    const mineIndex = getIndex(currMine, gGame.minePos)
+    const currCell = gBoard[row][col]
+    // -1 if mine doesn't exist yet
+    if (mineIndex === -1) gGame.minePos.push(currMine)
+    else gGame.minePos.splice(mineIndex, 1)
+
+    // update model and DOM
+    currCell.isMine = !currCell.isMine
+    elCell.classList.toggle('mine')
+    renderValue(EL_FLAGS_LEFT, gGame.minePos.length)
 }

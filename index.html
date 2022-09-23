@@ -1,30 +1,41 @@
 <html>
 
 <head>
-    <title>Mine-Sweep</title>
+    <title>mine sweep</title>
     <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body onload="initGame()">
-    <h1>Mine-Sweep</h1>
-    <div class="control">
-        <button onclick="initGame(gGame.level)"></button>
+    <h1>
+        <button id="undo" onclick="restoreLastState()">
+            <iconify-icon inline icon="fad:undo" width="25"></iconify-icon>
+        </button>
+        mine sweep
+        <button id="mute" onclick="onMute(this)">
+            <iconify-icon inline icon="bxs:volume-mute" width="25"></iconify-icon>
+        </button>
+    </h1>
+    <h3></h3>
+    <div class="tab">
+        <button class="tablinks" onclick="onSetLevel('easy')">easy</button>
+        <button class="tablinks" onclick="onSetLevel('medium')">medium</button>
+        <button class="tablinks" onclick="onSetLevel('hard')">hard</button>
+    </div>
+    <div class="time"></div>
+    <button id="flags-left">
+        <iconify-icon icon="charm:flag" width="20px"></iconify-icon>
+    </button>
+    <button id="start-button" onclick="initGame(gGame.level)"></button>
+    <div class="bttns-container">
+        <button id="mega" onclick="onMegaHint()">mega hint</button>
         <br>
-        <div class="time"></div>
-        <div class="bttns-container">
-            <button onclick="onSetLevel('easy')">easy</button>
-            <button onclick="onSetLevel('medium')">medium</button>
-            <button onclick="onSetLevel('hard')">hard</button>
-            <br>
-            <button onclick="restoreLastState()">undo</button>
-            <button id="mega-hint" onclick="onMegaHint()">mega hint</button>
-            <button onclick="onSevenBoom()">7 BOOM</button>
-            <br>
-            <button id="manual" onclick=" onManualPosition(this)">position myself</button>
-        </div>
-        <!-- <button onclick="exterminate()" id="exterminate">
-            <iconify-icon inline icon="fa6-solid:gun" width="30"></iconify-icon>
-        </button> -->
+        <button onclick="onSevenBoom()">7 BOOM</button>
+        <br>
+        <button id="manual" onclick=" onManualPosition(this)">position myself</button>
+        <br>
+        <button onclick="exterminate()" id="exterminate">
+                <iconify-icon inline icon="fa6-solid:gun" width="30"></iconify-icon>
+            </button>
     </div>
     <div class="game-area">
         <ul>
