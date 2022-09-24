@@ -148,7 +148,7 @@ function buildBoard() {
                 isShown: false,
                 isMine: false,
                 isMarked: false,
-                isUnkown: false
+                isUnknown: false
             }
         }
     }
@@ -193,13 +193,13 @@ function setMinesNegsCount(board) {
             const currCell = board[i][j]
             const elCurrCell = getElementByPos(i, j)
 
-            // this condition is relevnt for when player uses eterminate utility
+            // this condition is relevnt for when player uses exterminate utility
             // if a cell is shown, not a mine, has more than 0  mined neigbours
             // and the new amonut of mined around it is different than model, we upate DOM
             if (currCell.isShown && !currCell.isMine && minesCount &&
                 currCell.minesAroundCount !== minesCount) renderValue(elCurrCell, minesCount)
             if (currCell.isShown && !currCell.isMine && !minesCount &&
-                !currCell.isMarked && !currCell.isUnkown) {
+                !currCell.isMarked && !currCell.isUnknown) {
                 renderValue(elCurrCell, '')
                 currCell.minesAroundCount = minesCount
                 expandShown(gBoard, elCurrCell, i, j)
@@ -256,17 +256,20 @@ function revealAllMines() {
 
 
 // if a player loses a life, this function shows the mine they just stepped on, and updates model and DOM
-function revealMine(elCell, row, col) {
-    if (!isMute) playUtilSound('life')
-    gGame.life--
-    renderUtils('life')
-    gGame.markedCount++
-    // gGame.shownCount--
-    const mineCell = gBoard[row][col]
-    mineCell.isShown = true
-    mineCell.isMarked = true
-    elCell.classList.add('mine-marked')
-    renderImg(elCell, MINE_IMG)
+function revealMine(elCell, row, col) {// if player has no more life left, reveal all mines and end game
+    if (!gGame.life) revealAllMines()
+    else {
+        if (!isMute) playUtilSound('life')
+        gGame.life--
+        renderUtils('life')
+        gGame.markedCount++
+        // gGame.shownCount--
+        const mineCell = gBoard[row][col]
+        mineCell.isShown = true
+        mineCell.isMarked = true
+        elCell.classList.add('mine-marked')
+        renderImg(elCell, MINE_IMG)
+    }
 }
 
 
@@ -283,8 +286,8 @@ function checkGameOver() {
     }
 }
 
-        renderValue(EL_BEST, getBestTime(gGame.level))
-        renderImg(EL_START_BUTTON, WIN_IMG)
+renderValue(EL_BEST, getBestTime(gGame.level))
+renderImg(EL_START_BUTTON, WIN_IMG)
 
 
 
@@ -358,8 +361,8 @@ function onHint() {
 // to let cellClicked function know not to step on two next cells
 function onMegaHint() {
     if (!gGame.isOn || !gGame.mega || gGame.megaHintFirstPos) return
-    if (gGame.isHitOn) gGame.isHitOn = false
     saveCurrState()
+    if (gGame.isHitOn) gGame.isHitOn = false
     gGame.isMegaHintOn = true
 }
 
@@ -400,14 +403,13 @@ function exterminate() {
     // plays audio if mute mode is off
     if (!isMute) playUtilSound('exterminate')
 
-    saveCurrState()
 
     //updates model
     gGame.usedExterminate = true
     var minePos = getUnmarkedMine() // array of minesw coordinations that fit condition
     const unmarkedMinesCount = minePos.length // array length - mines amount
 
-     // DOM - update player about amount of mines removed
+    // DOM - update player about amount of mines removed
     if (unmarkedMinesCount >= 3) renderValue(EL_H3, '3 random mines were eliminated')
     else if (unmarkedMinesCount === 1) renderValue(EL_H3, '1 random mine was eliminated')
     else renderValue(EL_H3, unmarkedMinesCount + ` random mines were eliminated`)
@@ -429,5 +431,6 @@ function exterminate() {
     // updating model and DOM if necessary
     setMinesNegsCount(gBoard)
     renderFlagsLeft()
+    saveCurrState()
     checkGameOver()
 }

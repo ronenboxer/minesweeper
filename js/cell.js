@@ -18,6 +18,7 @@ function cellClicked(elCell, row, col) {
         timerIntervalId = setInterval(renderTime, 1000)
     } else if (!gGame.isOn) return
 
+
     // if player used mega hint, select border cells instead of reveal them 
     // if not, check to see if player used regular hint
     if (gGame.isMegaHintOn && gGame.mega) {
@@ -33,27 +34,18 @@ function cellClicked(elCell, row, col) {
 
     const currCell = gBoard[row][col]
     // to avoid revealing marked cells
-    if (currCell.isMarked || currCell.isUnkown) return
-
-    // if player stepped on mine
-    if (gBoard[row][col].isMine) {
-        // if player has no more life left, reveal all mines and end game
-        if (!gGame.life) revealAllMines()
-        // if they have more life, update model
-        else revealMine(elCell, row, col)
-        // if cell is not mine, player can see its content.
-    } else {
-        const minesAroundCount = gBoard[row][col].minesAroundCount
-        const flagsAroundCount = getNegsCountByKey(gBoard, { row: row, col: col }, 'isMarked')
-        // if the nuumber of the cell is equal to the number of flaged negigbours, show all neighbour
-        if (minesAroundCount &&
-            minesAroundCount === flagsAroundCount) showAllNegs(gBoard, row, col)
-        expandShown(gBoard, elCell, row, col)
-    }
-
+    if (currCell.isMarked || currCell.isUnknown) return
 
     // pushes to stateStck
     saveCurrState()
+
+    const minesAroundCount = gBoard[row][col].minesAroundCount
+    const flagsAroundCount = getNegsCountByKey(gBoard, { row: row, col: col }, 'isMarked')
+
+    // if the nuumber of the cell is equal to the number of flaged negigbours, show all neighbour
+    if (minesAroundCount === flagsAroundCount) showAllNegs(gBoard, row, col)
+    expandShown(gBoard, elCell, row, col)
+
     renderFlagsLeft()
     checkGameOver()
 }
@@ -71,13 +63,13 @@ function cellMarked(elCell, row, col) {
     if (currCell.isMarked) {
         //model
         currCell.isMarked = false
-        currCell.isUnkown = true
+        currCell.isUnknown = true
         //DOM
         renderValue(elCell, '?')
         gGame.markedCount--
-    } else if (currCell.isUnkown) {
+    } else if (currCell.isUnknown) {
         //model
-        currCell.isUnkown = false
+        currCell.isUnknown = false
         //DOM
         renderValue(elCell, '')
 
@@ -101,17 +93,14 @@ function expandShown(board, elCell, row, col) {
     const currCell = gBoard[row][col]
 
     // cant check marked cells
-    if (currCell.isMarked || currCell.isUnkown) return
+    if (currCell.isMarked || currCell.isUnknown) return
 
     // gets amount of mines around
     const minesCount = currCell.minesAroundCount
     if (!currCell.isShown) stepOnCell(board, elCell, row, col) //model
 
     // if there are mines around, stop looking for neighbours
-    if (minesCount) {
-        renderValue(elCell, minesCount) //DOM - shows numbers bigger than 0
-        return
-    }
+    if (minesCount) return
 
     // 0 mines as nighbours, time to expand
     for (var i = row - 1; i <= row + 1; i++) {
@@ -130,9 +119,15 @@ function expandShown(board, elCell, row, col) {
 
 // updates DOM and model
 function stepOnCell(board, elCell, row, col) {
-    elCell.classList.add('safe')
-    board[row][col].isShown = true
-    gGame.shownCount++
+    const currCell = board[row][col]
+    // if player stepped on mine
+    if (currCell.isMine) revealMine(elCell, row, col)
+    else {
+        elCell.classList.add('safe')
+        currCell.isShown = true
+        if (currCell.minesAroundCount) renderValue(elCell, currCell.minesAroundCount) //DOM - shows numbers bigger than 0
+        gGame.shownCount++
+    }
 }
 
 

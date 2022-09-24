@@ -28,6 +28,9 @@ function getNegsCountByKey(board, pos, key) {
             if (j < 0 || j > gLevel.SIZE - 1 ||
                 (j === pos.col && i === pos.row)) continue
 
+            // if a cell is unknown and function run to look for mraked cells,
+            // function quits and returns -1
+            if (key === 'isMarked' && board[i][j].isUnknown) return -1
             if (board[i][j][key]) count++
         }
     }
@@ -184,8 +187,8 @@ function saveCurrState() {
 
 // pops the last state and renders it
 function restoreLastState() {
-    if (!gGame.stateStack || !gGame.stateStack.length || !gGame.isOn) return
-    if (!isMute) playUtilSound(undo)
+    if (!gGame.stateStack || !gGame.stateStack.length|| !gGame.isOn) return
+    if (!isMute) playUtilSound('undo')
     const lastState = gGame.stateStack.pop()
     gBoard = JSON.parse(lastState.board)
     document.querySelector('.game-area').innerHTML = lastState.elGameArea
@@ -266,8 +269,8 @@ function playUtilSound(util) {
 
 // runs the utility a player uses
 function useUtility(util, firstPos = null, secondPos = null) {
-    if (util === 'safe') saveCurrState()
     if (!isMute) playUtilSound(util)
+    if (util === 'safe') saveCurrState()
     gGame[util]--
     renderUtils(util)
     var className
@@ -305,7 +308,7 @@ function useUtility(util, firstPos = null, secondPos = null) {
                 else elCurrCell.classList.toggle(className)
 
                 if (!currCell.isShown || !currCell.minesAroundCount) {
-                    if (!currCell.isMarked && !currCell.isUnkown) renderValue(elCurrCell, '')
+                    if (!currCell.isMarked && !currCell.isUnknown) renderValue(elCurrCell, '')
                     else if (currCell.isMarked) renderImg(elCurrCell, FLAG_IMG)
                     else renderValue(elCurrCell, '?')
                 }
