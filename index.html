@@ -17,34 +17,31 @@
     </h1>
     <h3></h3>
     <div class="tab">
-        <button class="tablinks" onclick="onSetLevel(event, 'easy')">easy</button>
-        <button class="tablinks" onclick="onSetLevel(event, 'medium')">medium</button>
-        <button class="tablinks" onclick="onSetLevel(event, 'hard')">hard</button>
+        <button class="tablinks" id="manual" onclick="onSetLevel('manual', this)">manual</button>
+        <button class="tablinks" id="easy" onclick="onSetLevel('easy')">easy</button>
+        <button class="tablinks" id="medium" onclick="onSetLevel('medium')">medium</button>
+        <button class="tablinks" id="hard" onclick="onSetLevel('hard')">hard</button>
+        <button class="tablinks" id="7boom" onclick="onSetLevel('7boom')">7 BOOM</button>
     </div>
-    <div class="time"></div>
+    <!-- <div class="time"></div> -->
     <button class="flags-left">
         <iconify-icon icon="charm:flag" width="20px"></iconify-icon>
     </button>
     <button id="start-button" onclick="initGame(gGame.level)"></button>
-    <div class="bttns-container">
-        <button id="mega" onclick="onMegaHint()">mega hint</button>
-        <br>
-        <button onclick="onSevenBoom()">7 BOOM</button>
-        <br>
-        <button id="manual" onclick=" onManualPosition(this)">position myself</button>
-        <br>
-        <button onclick="exterminate()" id="exterminate">
-                <iconify-icon inline icon="fa6-solid:gun" width="30"></iconify-icon>
-            </button>
-    </div>
+    
     <div class="game-area">
-        <ul>
-            <li id="life">lives: <span></span></li>
-            <li id="hint">hints: <span></span></li>
-            <li id="safe">safe clicks: <span></span></li>
-            <li id="best-score">best time: <span></span></li>
+        <ul class="left-side">
+            <li id="best-time">best time <span></span></li>
+            <li id="life">lives <span></span></li>
+            <li id="hint">hints <span></span></li>
+            <li id="safe">safe clicks <span></span></li>
         </ul>
         <table class="board"></table>
+        <ul  class="right-side">
+            <li id="time"><span></span> <t> time</t></li>
+            <li id="mega"><span></span><t> mega hint</t></li>
+            <li id="exterminate"><span></span><t> exterminate</t></li>
+        </ul>
     </div>
     <h2>made by ronen boxer</h2>
     <script src="js/utils.js"></script>

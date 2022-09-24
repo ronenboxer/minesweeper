@@ -92,7 +92,7 @@ function renderTime() {
     var minutes = parseInt(currTime / 60000)
     if (seconds < 10) seconds = '0' + seconds
     if (minutes < 10) minutes = '0' + minutes
-    const elTime = document.querySelector('.time')
+    const elTime = document.querySelector('#time span')
     elTime.innerText = minutes + ' : ' + seconds
 }
 
@@ -101,7 +101,6 @@ function renderTime() {
 
 // adds/removes a `utiliy` from DOM (such as life, hint click or safe click)
 function renderUtils(util) {
-    if (util === 'mega') return
     const elUtility = document.querySelector(`[id="${util}"] span`)
     var imgStr = ''
     for (var i = 0; i < gGame[util]; i++) {
@@ -114,6 +113,12 @@ function renderUtils(util) {
                 break
             case 'safe':
                 imgStr += SAFE_IMG
+                break
+            case 'mega':
+                imgStr += MEGA_HINT_IMG
+                break
+            case 'exterminate':
+                imgStr += EXTERMINATE_IMG
                 break
         }
     }
@@ -172,6 +177,7 @@ function saveCurrState() {
         hint: gGame.hint,
         safe: gGame.safe,
         mega: gGame.mega,
+        exterminate: gGame.exterminate,
         isMegaHintOn: gGame.isMegaHintOn
     }
     // JSON.stringify(gGame)
@@ -187,7 +193,7 @@ function saveCurrState() {
 
 // pops the last state and renders it
 function restoreLastState() {
-    if (!gGame.stateStack || !gGame.stateStack.length|| !gGame.isOn) return
+    if (!gGame.stateStack || !gGame.stateStack.length || !gGame.isOn) return
     if (!isMute) playUtilSound('undo')
     const lastState = gGame.stateStack.pop()
     gBoard = JSON.parse(lastState.board)
@@ -204,6 +210,7 @@ function restoreLastState() {
         hint: lastState.game.hint,
         safe: lastState.game.safe,
         mega: lastState.game.mega,
+        exterminate: lastState.game.exterminate,
         isHitOn: false,
         isMegaHintOn: lastState.game.isMegaHintOn,
         stateStack: gGame.stateStack

@@ -8,10 +8,12 @@ const WIN_IMG = `<iconify-icon icon="akar-icons:trophy" width="30px"></iconify-i
 const START_IMG = `<iconify-icon icon="bx:happy" width="31px"></iconify-icon>`
 const LIFE_IMG = `<iconify-icon inline icon="bi:heart-fill" width="24px"></iconify-icon>`
 const HINT_IMG = `<iconify-icon inline icon="academicons:ideas-repec" width="24px" onclick="onHint()"></iconify-icon>`
+const MEGA_HINT_IMG = `<iconify-icon inline icon="mdi:magnify-expand" width="24" onclick="onMegaHint()"></iconify-icon>`
+const EXTERMINATE_IMG = `<iconify-icon inline icon="fa6-solid:gun" width="24" onclick="exterminate()" id="exterminate"></iconify-icon>`
 const SAFE_IMG = `<iconify-icon inline icon="ion:help-buoy-sharp" width="24px" onclick="useUtility('safe')"></iconify-icon>`
 const EL_START_BUTTON = document.querySelector('#start-button')
 const EL_MANUAL_BUTTON = document.querySelector('#manual')
-const EL_BEST = document.querySelector(`#best-score span`)
+const EL_BEST = document.querySelector(`#best-time span`)
 const EL_FLAGS_LEFT = document.querySelector('.flags-left')
 const EL_H3 = document.querySelector('h3')
 
@@ -53,10 +55,6 @@ function initGame(level = null) {
     EL_H3.style.opacity = 1
     if (!level) return
 
-    // sets buttons to start
-    renderImg(EL_START_BUTTON, START_IMG)
-    if (!level) renderImg(EL_FLAGS_LEFT, FLAG_IMG)
-    else renderValue(EL_FLAGS_LEFT, gLevel.MINES)
     // EL_MANUAL_BUTTON.style.visibility = `visible`
 
     //model
@@ -78,6 +76,7 @@ function initGame(level = null) {
         hint: 3,
         safe: 3,
         mega: 1,
+        exterminate: 1,
 
         //hint mode
         isHitOn: false,
@@ -89,7 +88,7 @@ function initGame(level = null) {
     }
 
     //DOM
-    document.querySelector('.time').innerText = '00 : 00'
+    document.querySelector('#time span').innerText = '00 : 00'
     buildBoard()
     renderBoard()
 
@@ -105,31 +104,39 @@ function initGame(level = null) {
     renderUtils('life')
     renderUtils('hint')
     renderUtils('safe')
+    renderUtils('mega')
+    renderUtils('exterminate')
 }
 
 
 
 // sets level according to user choice
-function onSetLevel(evt, level) {
+function onSetLevel(level, element = null) {
+    if (gGame.level && gGame.level) document.getElementById(gGame.level).classList.remove(`active`)
     switch (level) {
         case 'easy':
-            gLevel = { SIZE: 4, MINES: 2 }
+            gLevel = { SIZE: 4, MINES: 2, name: 'easy' }
             break
         case 'medium':
-            gLevel = { SIZE: 8, MINES: 14 }
+            gLevel = { SIZE: 8, MINES: 14, name: 'medium' }
             break
         case 'hard':
-            gLevel = { SIZE: 12, MINES: 32 }
+            gLevel = { SIZE: 12, MINES: 32, name: 'hard'  }
             break
+        case '7boom':
+            if (!gLevel) return
+            onSevenBoom()
+            return
+            break
+        case 'manual':
+            if (!gLevel) return
+            onManualPosition(element)
+            return
         case defualt: return null
     }
 
-    const tablinks = document.getElementsByClassName("tablinks");
-    for (var i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
+    document.getElementById(level).classList.add(`active`)
 
-    evt.currentTarget.className += " active";
     renderValue(EL_FLAGS_LEFT, gLevel.MINES)
     renderValue(EL_BEST, getBestTime(level))
     initGame(level)
@@ -235,6 +242,7 @@ function gameOver() {
     gGame.isOn = false;
     if (is7Boom) is7Boom = false
     clearInterval(timerIntervalId)
+    document.getElementById(gGame.level).classList.add(`active`)
 }
 
 
@@ -293,8 +301,9 @@ renderImg(EL_START_BUTTON, WIN_IMG)
 
 // turning 7 boom mode on start and placing mines accordingly
 function onSevenBoom() {
+    initGame('7boom')
     is7Boom = true;
-    initGame(true)
+    document.getElementById('7boom').classList.add(`active`)
 
     for (var i = 0; i < gLevel.SIZE; i++) {
         for (var j = 0; j < gLevel.SIZE; j++) {
@@ -322,13 +331,15 @@ function onSevenBoom() {
 
 // toggle manual position feature:
 // first click is to position, second to stop positioning
-function onManualPosition(elButton) {
+function onManualPosition(elButton, event = null) {
     if (!gLevel) return
     // mode turned on, reset board
     if (!isManualPositionOn) {
         initGame(gGame.level)
         renderImg(EL_FLAGS_LEFT, FLAG_IMG)
         isManualPositionOn = true
+        elButton.classList.add('active')
+        document.getElementById(gGame.level).classList.remove(`active`)
         renderValue(elButton, 'all done') // update button
     } else { // player done positioning mines
         if (gGame.minePos.length) { // making sure player indeed placed mines
@@ -340,8 +351,12 @@ function onManualPosition(elButton) {
                 isManualPositionOn = false;
                 gGame.isOn = true
             }
-        } else initGame(gGame.level) // otherwise start a regular game
-        renderValue(elButton, 'position myself') // update button
+        } else {
+            document.getElementById(gGame.level).classList.add(`active`)
+            initGame(gGame.level) // otherwise start a regular game
+        }
+        renderValue(elButton, 'manual') // update button
+        elButton.classList.remove('active')
     }
 
 }

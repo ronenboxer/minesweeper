@@ -96,10 +96,10 @@ function expandShown(board, elCell, row, col) {
     if (currCell.isMarked || currCell.isUnknown) return
 
     // gets amount of mines around
-    const minesCount = currCell.minesAroundCount
     if (!currCell.isShown) stepOnCell(board, elCell, row, col) //model
-
+    
     // if there are mines around, stop looking for neighbours
+    const minesCount = currCell.minesAroundCount
     if (minesCount) return
 
     // 0 mines as nighbours, time to expand

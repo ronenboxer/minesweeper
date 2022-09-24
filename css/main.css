@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     margin: 0;
     height: 100%;
     overflow: hidden;
@@ -38,9 +39,7 @@ h1 button {
 }
 
 
-#mute:hover :disabled
-
-.flags-left:hover {
+#mute:hover :disabled .flags-left:hover {
     color: black;
     background-color: white;
 }
@@ -66,7 +65,7 @@ h2 {
     padding-left: 10px;
 }
 
-.bttns-container button {
+/* .bttns-container button {
     width: 100px;
     height: 60px;
     padding: 10px;
@@ -74,7 +73,7 @@ h2 {
     margin-left: 10px;
     margin-top: 30px;
     cursor: pointer;
-}
+} */
 
 button:hover {
     background-color: transparent;
@@ -91,9 +90,9 @@ table {
 }
 
 .time {
-    position: absolute;
+    /* position: absolute;
     right: 165px;
-    top: 225px;
+    top: 225px; */
     font-size: 20px;
     letter-spacing: 3px;
 }
@@ -143,7 +142,7 @@ td:hover {
 }
 
 .selected-cell {
-background-color: rgb(249, 254, 163);
+    background-color: rgb(249, 254, 163);
     opacity: 0.6;
 }
 
@@ -152,23 +151,23 @@ background-color: rgb(249, 254, 163);
     opacity: 0.6;
 }
 
-.game-area span {
+.left-side span {
     position: sticky;
     left: 220px;
 }
 
-
-span iconify-icon,
-#best-score span {
-    margin-left: 15px;
-    transition: all 850ms;
-    padding-right: 8px;
-    opacity: 0.8;
+.right-side span {
+    position: sticky;
+    right: 1220px;
 }
 
-#best-score span {
-    margin-left: 36.5px;
+.game-area iconify-icon{
+    cursor: pointer;
+}
 
+.game-area iconify-icon:hover {
+    box-shadow: 0 4px 2px -2px white;
+    color: rgb(236, 213, 5);
 }
 
 #life iconify-icon {
@@ -177,39 +176,37 @@ span iconify-icon,
     width: fit-content;
 }
 
-#life iconify-icon:hover {
-    color: rgba(145, 31, 31);
+
+span iconify-icon,
+#best-time span {
+    margin-left: 15px;
+    transition: all 850ms;
+    padding-right: 8px;
+    opacity: 0.8;
 }
 
-.game-area iconify-icon:hover {
-    box-shadow: 0 4px 2px -2px white;
-}
 
-#hint iconify-icon,
-#safe iconify-icon {
-    cursor: pointer;
-}
 
-#hint iconify-icon:hover {
-    color: rgb(236, 213, 5);
-}
-
-#safe iconify-icon:hover {
-    color: rgb(91, 184, 215);
-}
 
 ul {
     top: 220px;
     list-style-type: none;
     width: 60px;
-    text-align: left;
     position: absolute;
+}
+
+ul.left-side {
+    text-align: left;
+}
+
+ul.right-side{
+    text-align: right;
+    right: 310px;
 }
 
 li {
     display: inline-block;
     height: 60px;
-    margin-left: 30px;
     width: 300px;
     padding-bottom: 60px;
     transition: all 800ms;
@@ -218,6 +215,18 @@ li {
     text-shadow: 2px 3px 4px rgba(181, 181, 181, 0.75);
 }
 
+.left-side li {
+    margin-left: 30px;
+}
+
+li.right-side {
+    text-align: left;
+    margin-right: 30px;
+}
+
+#best-time span {
+    margin-left: 40px;
+}
 
 #start-button {
     width: 100px;
@@ -265,7 +274,8 @@ li {
     color: white;
 }
 
-.tab button:hover, .mute:hover {
+.tab button:hover,
+.mute:hover {
     background-color: white;
     color: black;
 }
