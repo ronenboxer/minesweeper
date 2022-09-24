@@ -1,7 +1,7 @@
 'use strict'
 
 //DOM
-const MINE_IMG = `<iconify-icon inline icon="bxs:bomb" style="color: white;" width="24"></iconify-icon>`
+const MINE_IMG = `<iconify-icon inline icon="bxs:bomb" width="24"></iconify-icon>`
 const FLAG_IMG = `<iconify-icon icon="charm:flag" width="20px"></iconify-icon>`
 const LOSE_IMG = `<iconify-icon icon="cil:face-dead" width="28px"></iconify-icon>`
 const WIN_IMG = `<iconify-icon icon="akar-icons:trophy" width="30px"></iconify-icon>`
@@ -11,11 +11,14 @@ const HINT_IMG = `<iconify-icon inline icon="academicons:ideas-repec" width="24p
 const MEGA_HINT_IMG = `<iconify-icon inline icon="mdi:magnify-expand" width="24" onclick="onMegaHint()"></iconify-icon>`
 const EXTERMINATE_IMG = `<iconify-icon inline icon="fa6-solid:gun" width="24" onclick="exterminate()" id="exterminate"></iconify-icon>`
 const SAFE_IMG = `<iconify-icon inline icon="ion:help-buoy-sharp" width="24px" onclick="useUtility('safe')"></iconify-icon>`
+const LIGHT_MODE = `<iconify-icon inline icon="cil:sun" width="24" style="color: white;" onclick="toggleLight('light')"></iconify-icon>`
+const DARK_MODE = `<iconify-icon inline icon="bi:moon-stars" style="color: black;" width="24" onclick="toggleLight('dark')"></iconify-icon>`
 const EL_START_BUTTON = document.querySelector('#start-button')
 const EL_MANUAL_BUTTON = document.querySelector('#manual')
 const EL_BEST = document.querySelector(`#best-time span`)
 const EL_FLAGS_LEFT = document.querySelector('.flags-left')
 const EL_H3 = document.querySelector('h3')
+const EL_TOGGLE_MODE = document.querySelector(`#toggle-mode`)
 
 
 // model
@@ -415,6 +418,7 @@ function showMegaHint(firstPos, secondPos) {
 function exterminate() {
     // lets plyaer use this feature once, only when game is on
     if (gGame.usedExterminate || !gGame.isOn) return
+    saveCurrState()
     // plays audio if mute mode is off
     if (!isMute) playUtilSound('exterminate')
 
@@ -446,6 +450,5 @@ function exterminate() {
     // updating model and DOM if necessary
     setMinesNegsCount(gBoard)
     renderFlagsLeft()
-    saveCurrState()
     checkGameOver()
 }

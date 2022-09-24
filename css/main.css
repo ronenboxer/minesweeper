@@ -7,7 +7,7 @@ body {
 
 body {
     text-align: center;
-    background-image: url('../imgs/backgroung.avif');
+    background-image: url('../imgs/backgroung.jpeg');
     background-size: cover;
     background-repeat: no-repeat;
     color: white;
@@ -30,7 +30,6 @@ button {
 }
 
 h1 button {
-    border-radius: 50%;
     height: 40px;
     width: 40px;
     cursor: pointer;
@@ -44,7 +43,6 @@ h1 button {
     background-color: white;
 }
 
-
 h2 {
     position: sticky;
     font-size: 20px;
@@ -53,28 +51,6 @@ h2 {
     text-shadow: 2px 3px 4px rgba(181, 181, 181, 0.75);
 }
 
-.control {
-    right: 270px;
-    display: inline-block;
-}
-
-.bttns-container {
-    position: absolute;
-    top: 250px;
-    right: 150px;
-    padding-left: 10px;
-}
-
-/* .bttns-container button {
-    width: 100px;
-    height: 60px;
-    padding: 10px;
-    border-radius: 30px;
-    margin-left: 10px;
-    margin-top: 30px;
-    cursor: pointer;
-} */
-
 button:hover {
     background-color: transparent;
     color: white;
@@ -82,19 +58,14 @@ button:hover {
 }
 
 table {
-    position: static;
-    margin-top: 500px;
+    position: absolute;
+    margin: auto;
+    right: 0;
+    left: 0;
+    top: 280px;
     text-align: center;
     margin: auto;
     border-spacing: 3px;
-}
-
-.time {
-    /* position: absolute;
-    right: 165px;
-    top: 225px; */
-    font-size: 20px;
-    letter-spacing: 3px;
 }
 
 tr,
@@ -102,7 +73,6 @@ td {
     height: 32px;
     width: 30px;
     font-weight: bold;
-    background-color: beige;
     transition: opacity 500ms;
     background-color: transparent;
     border: 0.2px solid white;
@@ -167,13 +137,6 @@ td:hover {
 
 .game-area iconify-icon:hover {
     box-shadow: 0 4px 2px -2px white;
-    color: rgb(236, 213, 5);
-}
-
-#life iconify-icon {
-    color: rgba(145, 31, 31);
-    opacity: 0.7;
-    width: fit-content;
 }
 
 
@@ -185,11 +148,8 @@ span iconify-icon,
     opacity: 0.8;
 }
 
-
-
-
 ul {
-    top: 220px;
+    top: 265px;
     list-style-type: none;
     width: 60px;
     position: absolute;
@@ -201,7 +161,7 @@ ul.left-side {
 
 ul.right-side{
     text-align: right;
-    right: 310px;
+    right: 330px;
 }
 
 li {
@@ -219,13 +179,26 @@ li {
     margin-left: 30px;
 }
 
-li.right-side {
-    text-align: left;
-    margin-right: 30px;
+.right-side li {
+    text-align: right;
+    width: 300px;
+}
+
+#life iconify-icon {
+    color: white;
+    opacity: 0.7;
+    cursor: auto;
+}
+#life iconify-icon:hover{
+    color: rgba(145, 31, 31);
 }
 
 #best-time span {
-    margin-left: 40px;
+    margin-left: 80px;
+}
+
+#time span {
+    margin-left: 16px;
 }
 
 #start-button {
@@ -302,9 +275,10 @@ h3 {
     position: absolute;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 20px;
     left: 0;
     right: 0;
-    top: 190px;
+    top: 210px;
     transition: opacity 3000ms;
 }
 
@@ -314,4 +288,115 @@ h3 {
 
 .win {
     background-color: rgb(159, 230, 199);
+}
+
+
+
+
+
+body.light-mode{
+    background-image: url('../imgs/backgroung-light.jpeg');
+    color: black;
+}
+
+.light-mode h1 {
+    text-shadow: 2px 3px 4px rgba(255, 255, 255, 0.75)
+}
+
+.light-mode button {
+    border: 1px solid black;
+}
+
+.light-mode h1 button {
+    color: black;
+}
+
+
+.light-mode #mute:hover :disabled .flags-left:hover {
+    color: white;
+    background-color: black;
+}
+
+.light-mode button:hover {
+    color: black;
+}
+
+.light-mode tr,
+.light-mode td {
+    border: 1px solid black;
+    width: 28px;
+}
+
+.light-mode td:hover {
+    background-color: black;
+    color: white;
+}
+
+.light-mode .safe {
+    background-color: rgb(159, 203, 230);
+}
+
+.light-mode .hint-cell {
+    background-color: rgb(140, 199, 231);
+    opacity: 0.6;
+}
+
+.light-mode .selected-cell {
+    background-color: rgb(249, 254, 163);
+    opacity: 0.6;
+}
+
+.light-mode .mine {
+    background-color: rgb(136, 69, 78);
+    opacity: 0.6;
+}
+
+.light-mode .light-mode li {
+    text-shadow: 2px 3px 4px rgba(255, 255, 255, 0.75);
+}
+
+.light-mode .flags-left {
+    color: black;
+}
+
+.light-mode .tab {
+    border: 1px solid rgb(0, 0, 0);
+}
+
+.light-mode .tab button {
+    border-radius: 0;
+    color: white;
+}
+
+.light-mode .tab button:hover,
+.light-mode .mute:hover {
+    background-color: rgb(144, 142, 142);
+}
+
+.light-mode .tab button.active {
+    background-color: rgb(70, 70, 70);
+    color: white;
+}
+
+
+.light-mode #undo:hover,
+.light-mode .flags-left:hover {
+    color: black;
+    background-color: rgb(176, 173, 173);
+}
+
+.light-mode .mute {
+    background-color: transparent;
+}
+
+.light-mode #start-button {
+    background-color: transparent;
+}
+
+.light-mode #start-button:hover {
+    background-color: rgb(137, 134, 134);
+}
+
+.light-mode .game-area{
+    text-shadow: 4px 4px 6px 10px white;
 }
