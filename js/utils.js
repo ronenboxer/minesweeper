@@ -14,7 +14,9 @@ function onMute(elButton) {
 // updates DOM about amount of mines / flags to place
 function renderFlagsLeft() {
     const flagsLeft = gGame.minePos.length - gGame.markedCount
-    if (flagsLeft >= 0) renderValue(EL_FLAGS_LEFT, flagsLeft)
+    renderValue(EL_FLAGS_LEFT, flagsLeft)
+    if (flagsLeft < 0) EL_FLAGS_LEFT.classList.add('flags-too-many')
+    else EL_FLAGS_LEFT.classList.remove('flags-too-many')
 }
 
 // returns the number of neighbours that has a certain key (such as: isMines, isMarked etc)
@@ -26,9 +28,6 @@ function getNegsCountByKey(board, pos, key) {
             if (j < 0 || j > gLevel.SIZE - 1 ||
                 (j === pos.col && i === pos.row)) continue
 
-            // if a cell is unknown and function run to look for mraked cells,
-            // it's being taking into account
-            if (key === 'isMarked' && board[i][j].isUnknown) count++
             if (board[i][j][key]) count++
         }
     }
@@ -267,6 +266,7 @@ function playUtilSound(util) {
 
 // runs the utility a player uses
 function useUtility(util, firstPos = null, secondPos = null) {
+    if (util === 'safe') saveCurrState()
     if (!isMute) playUtilSound(util)
     gGame[util]--
     renderUtils(util)

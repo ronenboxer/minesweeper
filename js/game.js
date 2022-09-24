@@ -12,7 +12,8 @@ const SAFE_IMG = `<iconify-icon inline icon="ion:help-buoy-sharp" width="24px" o
 const EL_START_BUTTON = document.querySelector('#start-button')
 const EL_MANUAL_BUTTON = document.querySelector('#manual')
 const EL_BEST = document.querySelector(`#best-score span`)
-const EL_FLAGS_LEFT = document.querySelector('#flags-left')
+const EL_FLAGS_LEFT = document.querySelector('.flags-left')
+const EL_H3 = document.querySelector('h3')
 
 
 // model
@@ -47,6 +48,9 @@ renderImg(EL_FLAGS_LEFT, FLAG_IMG)
 function initGame(level = null) {
     clearInterval(timerIntervalId)
     isProccessing = false
+    EL_START_BUTTON.classList.remove('win')
+    renderValue(EL_H3, '')
+    EL_H3.style.opacity = 1
     if (!level) return
 
     // sets buttons to start
@@ -106,7 +110,7 @@ function initGame(level = null) {
 
 
 // sets level according to user choice
-function onSetLevel(level) {
+function onSetLevel(evt, level) {
     switch (level) {
         case 'easy':
             gLevel = { SIZE: 4, MINES: 2 }
@@ -120,6 +124,12 @@ function onSetLevel(level) {
         case defualt: return null
     }
 
+    const tablinks = document.getElementsByClassName("tablinks");
+    for (var i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    evt.currentTarget.className += " active";
     renderValue(EL_FLAGS_LEFT, gLevel.MINES)
     renderValue(EL_BEST, getBestTime(level))
     initGame(level)
@@ -188,14 +198,12 @@ function setMinesNegsCount(board) {
             // and the new amonut of mined around it is different than model, we upate DOM
             if (currCell.isShown && !currCell.isMine && minesCount &&
                 currCell.minesAroundCount !== minesCount) renderValue(elCurrCell, minesCount)
-                if (currCell.isShown && !currCell.isMine && !minesCount &&
-                    !currCell.isMarked && !currCell.isUnkown) {
-                    renderValue(elCurrCell, '')
-                    expandShown(gBoard, elCurrCell, i, j)
-                }
-
-            // update model
-            currCell.minesAroundCount = minesCount
+            if (currCell.isShown && !currCell.isMine && !minesCount &&
+                !currCell.isMarked && !currCell.isUnkown) {
+                renderValue(elCurrCell, '')
+                currCell.minesAroundCount = minesCount
+                expandShown(gBoard, elCurrCell, i, j)
+            } else currCell.minesAroundCount = minesCount
         }
     }
 }
@@ -268,14 +276,15 @@ function checkGameOver() {
     if (gGame.markedCount + gGame.shownCount === gLevel.SIZE ** 2 &&
         gGame.markedCount === gGame.minePos.length) {
         setBestTime(gGame.level)
-        renderValue(EL_BEST, getBestTime(gGame.level))
-        renderImg(EL_START_BUTTON, WIN_IMG)
+        EL_START_BUTTON.classList.add("win")
         gGame.stateStack = null
         if (!isMute) playUtilSound('win')
         gameOver()
     }
 }
 
+        renderValue(EL_BEST, getBestTime(gGame.level))
+        renderImg(EL_START_BUTTON, WIN_IMG)
 
 
 
@@ -397,17 +406,17 @@ function exterminate() {
     gGame.usedExterminate = true
     var minePos = getUnmarkedMine() // array of minesw coordinations that fit condition
     const unmarkedMinesCount = minePos.length // array length - mines amount
-    const elBanner = document.querySelector('h3') // DOM - to update player about amount of mines removed
-    if (unmarkedMinesCount >= 3) renderValue(elBanner, '3 random mines were eliminated')
-    else if (unmarkedMinesCount === 1) renderValue(elBanner, '1 random mine was eliminated')
-    else renderValue(elBanner, unmarkedMinesCount + ` random mines were eliminated`)
 
-    // hide banner, clears is iiner text and restores its opacity
-    elBanner.style.opacity = 0
+     // DOM - update player about amount of mines removed
+    if (unmarkedMinesCount >= 3) renderValue(EL_H3, '3 random mines were eliminated')
+    else if (unmarkedMinesCount === 1) renderValue(EL_H3, '1 random mine was eliminated')
+    else renderValue(EL_H3, unmarkedMinesCount + ` random mines were eliminated`)
+
+    // hide h3, clears is iiner text and restores its opacity
     setTimeout(() => {
-        renderValue(elBanner, '')
-        elBanner.style.opacity = 1
-    }, 3000)
+        EL_H3.style.opacity = 0
+        setTimeout
+    }, 2000)
 
     for (var i = 0; i < unmarkedMinesCount && i < 3; i++) {
         const randomIdx = getRandomInt(0, minePos.length)

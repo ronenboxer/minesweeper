@@ -17,12 +17,12 @@
     </h1>
     <h3></h3>
     <div class="tab">
-        <button class="tablinks" onclick="onSetLevel('easy')">easy</button>
-        <button class="tablinks" onclick="onSetLevel('medium')">medium</button>
-        <button class="tablinks" onclick="onSetLevel('hard')">hard</button>
+        <button class="tablinks" onclick="onSetLevel(event, 'easy')">easy</button>
+        <button class="tablinks" onclick="onSetLevel(event, 'medium')">medium</button>
+        <button class="tablinks" onclick="onSetLevel(event, 'hard')">hard</button>
     </div>
     <div class="time"></div>
-    <button id="flags-left">
+    <button class="flags-left">
         <iconify-icon icon="charm:flag" width="20px"></iconify-icon>
     </button>
     <button id="start-button" onclick="initGame(gGame.level)"></button>

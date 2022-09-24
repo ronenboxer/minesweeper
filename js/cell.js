@@ -31,9 +31,6 @@ function cellClicked(elCell, row, col) {
         return
     }
 
-    // pushes to stateStck
-    saveCurrState()
-
     const currCell = gBoard[row][col]
     // to avoid revealing marked cells
     if (currCell.isMarked || currCell.isUnkown) return
@@ -51,9 +48,12 @@ function cellClicked(elCell, row, col) {
         // if the nuumber of the cell is equal to the number of flaged negigbours, show all neighbour
         if (minesAroundCount &&
             minesAroundCount === flagsAroundCount) showAllNegs(gBoard, row, col)
-        else expandShown(gBoard, elCell, row, col)
+        expandShown(gBoard, elCell, row, col)
     }
 
+
+    // pushes to stateStck
+    saveCurrState()
     renderFlagsLeft()
     checkGameOver()
 }
@@ -63,9 +63,8 @@ function cellClicked(elCell, row, col) {
 // when user right-clicks. they can make an unrevealed cell be makred with a flag, a `?` or delete the mark
 function cellMarked(elCell, row, col) {
     if (isProccessing) return
-    const flagsLeft = gGame.minePos.length - gGame.markedCount
     const currCell = gBoard[row][col]
-    if (!gGame.isOn || currCell.isShown || flagsLeft < 0) return
+    if (!gGame.isOn || currCell.isShown) return
 
     saveCurrState()
 
@@ -83,7 +82,6 @@ function cellMarked(elCell, row, col) {
         renderValue(elCell, '')
 
     } else {
-        if (flagsLeft <= 0) return
         //model
         gGame.markedCount++
         currCell.isMarked = true
