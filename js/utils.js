@@ -327,8 +327,9 @@ function useUtility(util, firstPos = null, secondPos = null) {
     }
 }
 
-function toggleLight(nextMode) {
-    if (nextMode === 'light') EL_TOGGLE_MODE.innerHTML = `<span>${LIGHT_MODE}</span> light mode`
+function toggleLight() {
+    if (!isDark) EL_TOGGLE_MODE.innerHTML = `<span>${LIGHT_MODE}</span> light mode`
     else EL_TOGGLE_MODE.innerHTML = `<span>${DARK_MODE}</span> dark mode`
+    isDark = !isDark
     document.querySelector(`body`).classList.toggle('light-mode')
 }

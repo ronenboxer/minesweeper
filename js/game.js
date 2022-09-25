@@ -6,13 +6,13 @@ const FLAG_IMG = `<iconify-icon icon="charm:flag" width="20px"></iconify-icon>`
 const LOSE_IMG = `<iconify-icon icon="cil:face-dead" width="28px"></iconify-icon>`
 const WIN_IMG = `<iconify-icon icon="akar-icons:trophy" width="30px"></iconify-icon>`
 const START_IMG = `<iconify-icon icon="bx:happy" width="31px"></iconify-icon>`
-const LIFE_IMG = `<iconify-icon inline icon="bi:heart-fill" width="24px"></iconify-icon>`
-const HINT_IMG = `<iconify-icon inline icon="academicons:ideas-repec" width="24px" onclick="onHint()"></iconify-icon>`
-const MEGA_HINT_IMG = `<iconify-icon inline icon="mdi:magnify-expand" width="24" onclick="onMegaHint()"></iconify-icon>`
-const EXTERMINATE_IMG = `<iconify-icon inline icon="fa6-solid:gun" width="24" onclick="exterminate()" id="exterminate"></iconify-icon>`
-const SAFE_IMG = `<iconify-icon inline icon="ion:help-buoy-sharp" width="24px" onclick="useUtility('safe')"></iconify-icon>`
-const LIGHT_MODE = `<iconify-icon inline icon="cil:sun" width="24" style="color: white;" onclick="toggleLight('light')"></iconify-icon>`
-const DARK_MODE = `<iconify-icon inline icon="bi:moon-stars" style="color: black;" width="24" onclick="toggleLight('dark')"></iconify-icon>`
+const LIFE_IMG = `<iconify-icon inline title="if you see it, you're good" icon="bi:heart-fill" width="24px"></iconify-icon>`
+const HINT_IMG = `<iconify-icon inline title="click here, and then on any cell"icon="academicons:ideas-repec" width="24px" onclick="onHint()"></iconify-icon>`
+const MEGA_HINT_IMG = `<iconify-icon inline title="click here, then pick 2 cells" icon="mdi:magnify-expand" width="24" onclick="onMegaHint()"></iconify-icon>`
+const EXTERMINATE_IMG = `<iconify-icon inline title="get rid of up to 3 mines" icon="fa6-solid:gun" width="24" onclick="exterminate()" id="exterminate"></iconify-icon>`
+const SAFE_IMG = `<iconify-icon inline title="show a safe cell" icon="ion:help-buoy-sharp" width="24px" onclick="useUtility('safe')"></iconify-icon>`
+const LIGHT_MODE = `<iconify-icon inline title="is it too dark?" icon="cil:sun" width="24" onclick="toggleLight('')"></iconify-icon>`
+const DARK_MODE = `<iconify-icon inline title="now it's too damn bright!" icon="bi:moon-stars" width="24" onclick="toggleLight('')"></iconify-icon>`
 const EL_START_BUTTON = document.querySelector('#start-button')
 const EL_MANUAL_BUTTON = document.querySelector('#manual')
 const EL_BEST = document.querySelector(`#best-time span`)
@@ -32,6 +32,7 @@ var is7Boom = false
 var isProccessing
 var isMute = false
 var isManualPositionOn = false
+var isDark = true
 
 // sounds
 const MEGA_HINT_SOUND = new Audio(`sound/win.wav`)
@@ -46,14 +47,14 @@ const EXTERMINATE_SOUND = new Audio(`sound/exterminate_sound.wav`)
 
 renderImg(EL_START_BUTTON, START_IMG)
 renderImg(EL_FLAGS_LEFT, FLAG_IMG)
-
-
+EL_TOGGLE_MODE.innerHTML = `<span>${LIGHT_MODE}</span> light mode`
 
 // a new game
 function initGame(level = null) {
     clearInterval(timerIntervalId)
     isProccessing = false
     EL_START_BUTTON.classList.remove('win')
+    renderImg(EL_START_BUTTON, START_IMG)
     renderValue(EL_H3, '')
     EL_H3.style.opacity = 1
     if (!level) return
@@ -118,13 +119,13 @@ function onSetLevel(level, element = null) {
     if (gGame.level && gGame.level) document.getElementById(gGame.level).classList.remove(`active`)
     switch (level) {
         case 'easy':
-            gLevel = { SIZE: 4, MINES: 2, name: 'easy' }
+            gLevel = { SIZE: 4, MINES: 2}
             break
         case 'medium':
-            gLevel = { SIZE: 8, MINES: 14, name: 'medium' }
+            gLevel = { SIZE: 8, MINES: 14}
             break
         case 'hard':
-            gLevel = { SIZE: 12, MINES: 32, name: 'hard'  }
+            gLevel = { SIZE: 12, MINES: 32}
             break
         case '7boom':
             if (!gLevel) return
@@ -292,13 +293,12 @@ function checkGameOver() {
         setBestTime(gGame.level)
         EL_START_BUTTON.classList.add("win")
         gGame.stateStack = null
+        renderValue(EL_BEST, getBestTime(gGame.level))
+        renderImg(EL_START_BUTTON, WIN_IMG)
         if (!isMute) playUtilSound('win')
         gameOver()
     }
 }
-
-renderValue(EL_BEST, getBestTime(gGame.level))
-renderImg(EL_START_BUTTON, WIN_IMG)
 
 
 
@@ -322,9 +322,11 @@ function onSevenBoom() {
             }
         }
     }
-
+    gLevel.MINES = gGame.minePos.length
     // update neighbours, model
     setMinesNegsCount(gBoard)
+    renderValue(EL_FLAGS_LEFT, gLevel.MINES)
+    renderValue(EL_BEST, getBestTime(gLevel.level))
     gGame.isOn = true
     gGame.startTime = Date.now()
     timerIntervalId = setInterval(renderTime, 1000)
@@ -351,6 +353,9 @@ function onManualPosition(elButton, event = null) {
                 const elCell = getElementByPos(currPos.row, currPos.col)
                 elCell.classList.remove('mine')
                 setMinesNegsCount(gBoard)
+                gLevel.MINES = gGame.minePos.length
+                renderValue(EL_FLAGS_LEFT, gLevel.MINES)
+                renderValue(EL_BEST, getBestTime(gLevel.level))
                 isManualPositionOn = false;
                 gGame.isOn = true
             }
@@ -417,14 +422,14 @@ function showMegaHint(firstPos, secondPos) {
 // removes up to 3 unstepped on mines, should they exist (randomly)
 function exterminate() {
     // lets plyaer use this feature once, only when game is on
-    if (gGame.usedExterminate || !gGame.isOn) return
+    if (!gGame.exterminate || !gGame.isOn) return
     saveCurrState()
     // plays audio if mute mode is off
     if (!isMute) playUtilSound('exterminate')
-
+    gGame.exterminate--
+    renderUtils('exterminate')
 
     //updates model
-    gGame.usedExterminate = true
     var minePos = getUnmarkedMine() // array of minesw coordinations that fit condition
     const unmarkedMinesCount = minePos.length // array length - mines amount
 

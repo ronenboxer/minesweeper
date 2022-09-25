@@ -71,7 +71,7 @@ table {
 tr,
 td {
     height: 32px;
-    width: 30px;
+    width: 29px;
     font-weight: bold;
     transition: opacity 500ms;
     background-color: transparent;
@@ -137,6 +137,7 @@ td:hover {
 
 .game-area iconify-icon:hover {
     box-shadow: 0 4px 2px -2px white;
+    color: rgb(210, 188, 47);
 }
 
 
@@ -185,12 +186,7 @@ li {
 }
 
 #life iconify-icon {
-    color: white;
-    opacity: 0.7;
     cursor: auto;
-}
-#life iconify-icon:hover{
-    color: rgba(145, 31, 31);
 }
 
 #best-time span {
@@ -337,11 +333,14 @@ body.light-mode{
 }
 
 .light-mode .hint-cell {
-    background-color: rgb(140, 199, 231);
-    opacity: 0.6;
+    background-color: rgb(159, 230, 199);
 }
 
-.light-mode .selected-cell {
+.light-mode .game-area span iconify-icoy{
+    color: black;
+}
+
+/* .light-mode .selected-cell {
     background-color: rgb(249, 254, 163);
     opacity: 0.6;
 }
@@ -349,7 +348,7 @@ body.light-mode{
 .light-mode .mine {
     background-color: rgb(136, 69, 78);
     opacity: 0.6;
-}
+} */
 
 .light-mode .light-mode li {
     text-shadow: 2px 3px 4px rgba(255, 255, 255, 0.75);
@@ -364,7 +363,7 @@ body.light-mode{
 }
 
 .light-mode .tab button {
-    border-radius: 0;
+    border: none;
     color: white;
 }
 
@@ -377,7 +376,6 @@ body.light-mode{
     background-color: rgb(70, 70, 70);
     color: white;
 }
-
 
 .light-mode #undo:hover,
 .light-mode .flags-left:hover {
@@ -399,4 +397,17 @@ body.light-mode{
 
 .light-mode .game-area{
     text-shadow: 4px 4px 6px 10px white;
+}
+
+.light-mode .win {
+    background-color: rgb(159, 230, 199);
+}
+
+.light-mode .game-area iconify-icon:hover {
+    box-shadow: 0 4px 2px -2px white;
+    color: rgb(246, 246, 246);
+}
+
+#life iconify-icon:hover{
+    color: rgba(145, 31, 31);
 }
