@@ -1,7 +1,7 @@
 'use strict'
 
 //DOM
-const MINE_IMG = `<iconify-icon inline icon="bxs:bomb" width="24"></iconify-icon>`
+const MINE_IMG = `<iconify-icon inline icon="bxs:bomb" width="22"></iconify-icon>`
 const FLAG_IMG = `<iconify-icon icon="charm:flag" width="1.2vw"></iconify-icon>`
 const LOSE_IMG = `<iconify-icon icon="cil:face-dead" width="2vw"></iconify-icon>`
 const WIN_IMG = `<iconify-icon icon="akar-icons:trophy" width="2vw"></iconify-icon>`
