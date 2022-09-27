@@ -466,12 +466,18 @@ function exterminate() {
     if (unmarkedMinesCount >= 3) renderValue(EL_H3, '3 random mines were eliminated')
     else if (unmarkedMinesCount === 1) renderValue(EL_H3, '1 random mine was eliminated')
     else renderValue(EL_H3, unmarkedMinesCount + ` random mines were eliminated`)
+    EL_H3.style.transition= 'opacity 0'
 
     // hides h3, clears is inner text and restores its opacity
     setTimeout(() => {
+        EL_H3.style.transition= 'opacity 3000'
         EL_H3.style.opacity = 0
         setTimeout
     }, 2000)
+    setTimeout(() => {
+        renderValue(EL_H3, ``)
+        EL_H3.style.opacity = 1
+    }, 7000)
 
     // updating model and DOM if necessary
     setMinesNegsCount(gBoard)

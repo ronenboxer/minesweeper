@@ -300,6 +300,18 @@ function useUtility(util, firstPos = null, secondPos = null) {
         firstPos = { row: firstPos.row - 1, col: firstPos.col - 1 }
     } else if (util === 'safe') {
         firstPos = getRandomHiddenCell(gBoard)
+        if (!firstPos){
+            EL_H3.innerText = 'No more empty cells'
+            setTimeout(() => {
+                EL_H3.style.opacity = 0
+                setTimeout
+            }, 2000)
+            setTimeout(() => {
+                renderValue(EL_H3, ``)
+                EL_H3.style.opacity = 1
+            }, 5100)
+            return
+        }
         secondPos = firstPos
         hintTime = 2000
     }
