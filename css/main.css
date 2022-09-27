@@ -39,7 +39,8 @@ h1 button {
 }
 
 
-#mute:hover :disabled .flags-left:hover {
+#mute:hover :disabled,
+.flags-left:hover {
     color: black;
     background-color: white;
 }
@@ -74,22 +75,25 @@ td {
     height: 25.6;
     width: 22.6;
     font-weight: bold;
-    font-size: 0.9vw;
+    font-size: 13px;
     transition: opacity 500ms;
     background-color: transparent;
     border: 0.2px solid white;
-    border-radius: 0.25vw;
+    border-radius: 4px;
     transition: all 400ms;
 }
 
-td:hover {
+.cell {
+    color: white;
+    /* background-color: black; */
+    opacity: 0.7;
+}
+
+.cell:hover {
     background-color: white;
     opacity: 0.5;
     color: black;
-}
-
-.cell {
-    opacity: 0.7;
+    /* border: 0.2px solid inherit; */
 }
 
 .safe {
@@ -137,7 +141,7 @@ td:hover {
     cursor: pointer;
 }
 
-.game-area iconify-icon:hover {
+.game-area ul iconify-icon:hover {
     box-shadow: 0 0.2564vw 0.1282vw -0.1282vw white;
     color: rgb(210, 188, 47);
 }
@@ -247,8 +251,7 @@ li {
     color: white;
 }
 
-.tab button:hover,
-.mute:hover {
+.tab button:hover {
     background-color: white;
     color: black;
 }
@@ -313,7 +316,7 @@ body.light-mode {
 }
 
 
-.light-mode #mute:hover :disabled .flags-left:hover {
+.flags-left:hover {
     color: white;
     background-color: black;
 }
@@ -362,8 +365,7 @@ body.light-mode {
     color: white;
 }
 
-.light-mode .tab button:hover,
-.light-mode .mute:hover {
+.light-mode .tab button:hover {
     background-color: rgb(144, 142, 142);
 }
 
@@ -375,22 +377,23 @@ body.light-mode {
 .light-mode #undo:hover,
 .light-mode #redo:hover {
     color: black;
-    background-color: rgb(176, 173, 173);
+    background-color: white(176, 173, 173);
+    opacity: 0.5;
 }
 
 .light-mode .mute {
-    background-color: transparent;
+    opacity: 0.8;
 }
 
 .light-mode #start-button {
     background-color: transparent;
 }
 
-.light-mode #start-button:hover,
+/* .light-mode #start-button:hover,
 .light-mode .flags-left:hover {
     background-color: rgb(130, 148, 184);
     opacity: 0.6;
-}
+} */
 
 .light-mode .game-area {
     text-shadow: 0.256vw 0.256vw 0.38vw 0.64vw white;
@@ -400,11 +403,20 @@ body.light-mode {
     background-color: rgb(159, 230, 199);
 }
 
-.light-mode .game-area iconify-icon:hover {
+.light-mode .game-area ul iconify-icon:hover {
     box-shadow: 0 2.56vw 1.28vw -1.28vw white;
     color: rgb(210, 188, 47);
 }
 
 #life iconify-icon:hover {
     color: rgba(145, 31, 31);
+}
+
+
+#mute:hover,
+.mute #mute:hover,
+h1 button:hover{
+    background-color: white;
+    color: black;
+    opacity: 0.6;
 }

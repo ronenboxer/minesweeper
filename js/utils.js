@@ -249,16 +249,16 @@ function redo() {
 
 
 // returns an array of unmarked mines (for exterminate funciton)
-function getUnmarkedMine() {
-    var minePos = []
-    for (var i = 0; i < gGame.minePos.length; i++) {
-        const currMinePos = gGame.minePos[i]
-        if (!gBoard[currMinePos.row][currMinePos.col].isShown &&
-            !gBoard[currMinePos.row][currMinePos.col].isMarked &&
-            !gBoard[currMinePos.row][currMinePos.col].isUnknown) minePos.push(JSON.parse(JSON.stringify(currMinePos)))
-    }
-    return minePos
-}
+// function getUnmarkedMine() {
+//     var minePos = []
+//     for (var i = 0; i < gGame.minePos.length; i++) {
+//         const currMinePos = gGame.minePos[i]
+//         if (!gBoard[currMinePos.row][currMinePos.col].isShown &&
+//             !gBoard[currMinePos.row][currMinePos.col].isMarked &&
+//             !gBoard[currMinePos.row][currMinePos.col].isUnknown) minePos.push(JSON.parse(JSON.stringify(currMinePos)))
+//     }
+//     return minePos
+// }
 
 // player sound according to key - util
 function playUtilSound(util) {

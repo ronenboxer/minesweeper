@@ -1,8 +1,8 @@
 'use strict'
 
 //DOM
-const MINE_IMG = `<iconify-icon inline icon="bxs:bomb" width="22"></iconify-icon>`
-const FLAG_IMG = `<iconify-icon icon="charm:flag" width="1.2vw"></iconify-icon>`
+const MINE_IMG = `<iconify-icon inline icon="bxs:bomb" class="mines" width="20px"></iconify-icon>`
+const FLAG_IMG = `<iconify-icon icon="charm:flag" class="flags" width="15px"></iconify-icon>`
 const LOSE_IMG = `<iconify-icon icon="cil:face-dead" width="2vw"></iconify-icon>`
 const WIN_IMG = `<iconify-icon icon="akar-icons:trophy" width="2vw"></iconify-icon>`
 const START_IMG = `<iconify-icon icon="bx:happy" width="2vw"></iconify-icon>`
@@ -444,21 +444,16 @@ function exterminate() {
     gGame.exterminate--
     renderUtils('exterminate')
 
-    //updates model
-    var minePos = getUnmarkedMine() // array of minesw coordinations that fit condition
+    // gets untouched mines (array of mines coordinations)
+    var minePos = gGame.minePos.filter(minePos => {
+        const row = minePos.row
+        const col = minePos.col
+        return !gBoard[row][col].isShown && !gBoard[row][col].isMarked && !gBoard[row][col].isUnknown
+    })
+    
     const unmarkedMinesCount = minePos.length // array length - mines amount
 
-    // DOM - update player about amount of mines removed
-    if (unmarkedMinesCount >= 3) renderValue(EL_H3, '3 random mines were eliminated')
-    else if (unmarkedMinesCount === 1) renderValue(EL_H3, '1 random mine was eliminated')
-    else renderValue(EL_H3, unmarkedMinesCount + ` random mines were eliminated`)
-
-    // hide h3, clears is iiner text and restores its opacity
-    setTimeout(() => {
-        EL_H3.style.opacity = 0
-        setTimeout
-    }, 2000)
-
+    // removes random mines and updating model
     for (var i = 0; i < unmarkedMinesCount && i < 3; i++) {
         const randomIdx = getRandomInt(0, minePos.length)
         const currMinePos = minePos.splice(randomIdx, 1)[0]
@@ -466,6 +461,17 @@ function exterminate() {
         gBoard[currMinePos.row][currMinePos.col].isMine = false;
         gGame.minePos.splice(mineIdx, 1)
     }
+
+    // lets player know homw many mines were removed
+    if (unmarkedMinesCount >= 3) renderValue(EL_H3, '3 random mines were eliminated')
+    else if (unmarkedMinesCount === 1) renderValue(EL_H3, '1 random mine was eliminated')
+    else renderValue(EL_H3, unmarkedMinesCount + ` random mines were eliminated`)
+
+    // hides h3, clears is inner text and restores its opacity
+    setTimeout(() => {
+        EL_H3.style.opacity = 0
+        setTimeout
+    }, 2000)
 
     // updating model and DOM if necessary
     setMinesNegsCount(gBoard)
