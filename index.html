@@ -1,31 +1,33 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mine sweep</title>
     <link rel="stylesheet" href="css/main.css">
 </head>
 
-<body onload="initGame()">
+<body>
     <h1>
-        <button id="undo" onclick="restoreLastState()">
-            <iconify-icon inline icon="fad:undo" width="25"></iconify-icon>
+        <button id="undo" title="undo"onclick="undo()">
+            <iconify-icon inline icon="fad:undo" width="1.5vw"></iconify-icon>
+        </button>
+        <button id="redo" title="redo"onclick="redo()">
+            <iconify-icon inline icon="fad:undo" flip="horizontal" width="1.5vw"></iconify-icon>
         </button>
         mine sweep
         <button id="mute" onclick="onMute(this)">
-            <iconify-icon inline icon="bxs:volume-mute" width="25"></iconify-icon>
+            <iconify-icon inline icon="bxs:volume-mute" width="1.5vw"></iconify-icon>
         </button>
     </h1>
     <h3></h3>
     <div class="tab">
-        <button class="tablinks" id="manual" onclick="onSetLevel('manual', this)">manual</button>
-        <button class="tablinks" id="easy" onclick="onSetLevel('easy')">easy</button>
-        <button class="tablinks" id="medium" onclick="onSetLevel('medium')">medium</button>
-        <button class="tablinks" id="hard" onclick="onSetLevel('hard')">hard</button>
-        <button class="tablinks" id="7boom" onclick="onSetLevel('7boom')">7 BOOM</button>
+        <button class="tab-links" id="manual" onclick="onSetLevel('manual', this)">manual</button>
+        <button class="tab-links" id="easy" onclick="onSetLevel('easy')">easy</button>
+        <button class="tab-links" id="medium" onclick="onSetLevel('medium')">medium</button>
+        <button class="tab-links" id="hard" onclick="onSetLevel('hard')">hard</button>
+        <button class="tab-links" id="7boom" onclick="onSetLevel('7boom')">7 BOOM</button>
     </div>
-    <!-- <div class="time"></div> -->
     <button class="flags-left">
-        <iconify-icon icon="charm:flag" width="20px"></iconify-icon>
     </button>
     <button id="start-button" onclick="initGame(gGame.level)"></button>
     

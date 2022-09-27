@@ -3,7 +3,8 @@
 // when player clicks a cell
 function cellClicked(elCell, row, col) {
     if (isProccessing) return
-
+    // undoStrike = false
+    // gGame.stateStack.splice(stateStackIdx + 1)
     // for manual position mode
     if (isManualPositionOn) {
         positionMine(row, col)
@@ -21,7 +22,7 @@ function cellClicked(elCell, row, col) {
 
     // if player used mega hint, select border cells instead of reveal them 
     // if not, check to see if player used regular hint
-    if (gGame.isMegaHintOn && gGame.mega) {
+    if (gGame.isMegaHintOn) {
         elCell.classList.toggle('selected-cell')
         if (!gGame.megaHintFirstPos) gGame.megaHintFirstPos = { row: row, col: col }
         else showMegaHint(gGame.megaHintFirstPos, { row: row, col: col })
@@ -36,18 +37,19 @@ function cellClicked(elCell, row, col) {
     // to avoid revealing marked cells
     if (currCell.isMarked || currCell.isUnknown) return
 
-    // pushes to stateStck
-    saveCurrState()
 
     const minesAroundCount = gBoard[row][col].minesAroundCount
     const flagsAroundCount = getNegsCountByKey(gBoard, { row: row, col: col }, 'isMarked')
 
     // if the nuumber of the cell is equal to the number of flaged negigbours, show all neighbour
     if (minesAroundCount === flagsAroundCount) showAllNegs(gBoard, row, col)
+    else if (currCell.isShown) return
     expandShown(gBoard, elCell, row, col)
 
     renderFlagsLeft()
-    checkGameOver()
+    if (checkGameOver()) return
+    // pushes to stateStck
+    saveCurrState()
 }
 
 
@@ -55,10 +57,11 @@ function cellClicked(elCell, row, col) {
 // when user right-clicks. they can make an unrevealed cell be makred with a flag, a `?` or delete the mark
 function cellMarked(elCell, row, col) {
     if (isProccessing) return
+    // undoStrike = false
+    // gGame.stateStack.splice(stateStackIdx + 1)
+
     const currCell = gBoard[row][col]
     if (!gGame.isOn || currCell.isShown) return
-
-    saveCurrState()
 
     if (currCell.isMarked) {
         //model
@@ -82,7 +85,8 @@ function cellMarked(elCell, row, col) {
     }
 
     renderFlagsLeft()
-    checkGameOver()
+    if (checkGameOver()) return
+    saveCurrState()
 }
 
 
@@ -97,7 +101,7 @@ function expandShown(board, elCell, row, col) {
 
     // gets amount of mines around
     if (!currCell.isShown) stepOnCell(board, elCell, row, col) //model
-    
+
     // if there are mines around, stop looking for neighbours
     const minesCount = currCell.minesAroundCount
     if (minesCount) return
@@ -136,11 +140,11 @@ function stepOnCell(board, elCell, row, col) {
 function positionMine(row, col) {
     const currMine = { row: row, col: col }
     const elCell = getElementByPos(row, col)
-    const mineIndex = getIndex(currMine, gGame.minePos)
+    const mineIdx = gGame.minePos.findIndex(mine => mine.row === row && mine.col === col)
     const currCell = gBoard[row][col]
     // -1 if mine doesn't exist yet
-    if (mineIndex === -1) gGame.minePos.push(currMine)
-    else gGame.minePos.splice(mineIndex, 1)
+    if (mineIdx === -1) gGame.minePos.push(currMine)
+    else gGame.minePos.splice(mineIdx, 1)
 
     // update model and DOM
     currCell.isMine = !currCell.isMine

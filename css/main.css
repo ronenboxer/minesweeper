@@ -15,23 +15,24 @@ body {
 }
 
 h1 {
-    margin-top: 60px;
-    margin-bottom: 40px;
-    font-size: 47px;
-    letter-spacing: 10px;
-    text-shadow: 2px 3px 4px rgba(181, 181, 181, 0.75)
+    margin-top: 6.1vh;
+    margin-bottom: 4.11vh;
+    font-size: 4.82vh;
+    letter-spacing: 0.6vw;
+    text-shadow: 0.128vw 0.192vw 0.256vw rgba(181, 181, 181, 0.75)
 }
 
 button {
     border: 1px solid white;
     border-style: outset;
+    font-size: 0.83vw;
     border-radius: 50%;
     opacity: 0.8;
 }
 
 h1 button {
-    height: 40px;
-    width: 40px;
+    height: 2.56vw;
+    width: 2.56vw;
     cursor: pointer;
     color: white;
     background: transparent;
@@ -45,10 +46,10 @@ h1 button {
 
 h2 {
     position: sticky;
-    font-size: 20px;
-    letter-spacing: 3px;
-    top: 770px;
-    text-shadow: 2px 3px 4px rgba(181, 181, 181, 0.75);
+    font-size: 1.28vw;
+    letter-spacing: 1vw;
+    top: 90vh;
+    text-shadow: 0.128vw 0.192vw 0.256vw rgba(181, 181, 181, 0.75);
 }
 
 button:hover {
@@ -62,7 +63,7 @@ table {
     margin: auto;
     right: 0;
     left: 0;
-    top: 280px;
+    top: 27.2vh;
     text-align: center;
     margin: auto;
     border-spacing: 3px;
@@ -70,13 +71,14 @@ table {
 
 tr,
 td {
-    height: 32px;
-    width: 29px;
+    height: 25.6;
+    width: 22;
     font-weight: bold;
+    font-size: 0.9vw;
     transition: opacity 500ms;
     background-color: transparent;
     border: 0.2px solid white;
-    border-radius: 4px;
+    border-radius: 0.25vw;
     transition: all 400ms;
 }
 
@@ -123,36 +125,36 @@ td:hover {
 
 .left-side span {
     position: sticky;
-    left: 220px;
+    left: 14vw;
 }
 
 .right-side span {
     position: sticky;
-    right: 1220px;
+    right: 78vw;
 }
 
-.game-area iconify-icon{
+.game-area iconify-icon {
     cursor: pointer;
 }
 
 .game-area iconify-icon:hover {
-    box-shadow: 0 4px 2px -2px white;
+    box-shadow: 0 0.2564vw 0.1282vw -0.1282vw white;
     color: rgb(210, 188, 47);
 }
 
 
 span iconify-icon,
 #best-time span {
-    margin-left: 15px;
+    margin-left: 1vw;
     transition: all 850ms;
-    padding-right: 8px;
+    padding-right: 0.49vw;
     opacity: 0.8;
 }
 
 ul {
-    top: 265px;
+    top: 27.304vh;
     list-style-type: none;
-    width: 60px;
+    width: 3.84vw;
     position: absolute;
 }
 
@@ -160,29 +162,29 @@ ul.left-side {
     text-align: left;
 }
 
-ul.right-side{
+ul.right-side {
     text-align: right;
-    right: 330px;
+    right: 21.15vw;
 }
 
 li {
     display: inline-block;
-    height: 60px;
-    width: 300px;
-    padding-bottom: 60px;
+    height: 6.179vh;
+    width: 19.2vw;
+    padding-bottom: 6.179vh;
     transition: all 800ms;
-    font-size: 20px;
-    letter-spacing: 4px;
-    text-shadow: 2px 3px 4px rgba(181, 181, 181, 0.75);
+    font-size: 1.282vw;
+    letter-spacing: 0.256vw;
+    text-shadow: 0.128vw 0.192vw 0.256vw rgba(181, 181, 181, 0.75);
 }
 
 .left-side li {
-    margin-left: 30px;
+    margin-left: 1.92vw;
 }
 
 .right-side li {
     text-align: right;
-    width: 300px;
+    width: 19.2vw;
 }
 
 #life iconify-icon {
@@ -190,22 +192,21 @@ li {
 }
 
 #best-time span {
-    margin-left: 80px;
+    margin-left: 5.358vw;
 }
 
 #time span {
-    margin-left: 16px;
+    margin-left: 1.02vw;
 }
 
 #start-button {
-    width: 100px;
-    height: 100px;
+    width: 10.3vh;
+    height: 10.3vh;
     position: absolute;
-    top: 80px;
-    right: 150px;
+    top: 8.2391vh;
+    right: 9.61vw;
     border-radius: 50%;
-    padding: 30px;
-    margin-bottom: 30px;
+    padding: 3.0848vh;
     cursor: pointer;
     opacity: 0.8;
 }
@@ -214,30 +215,33 @@ li {
     position: absolute;
     background-color: transparent;
     color: white;
-    font-size: 20px;
-    left: 150px;
-    top: 80px;
-    width: 100px;
-    height: 100px;
+    font-size: 1.282vw;
+    left: 9.61vw;
+    top: 8.2391vh;
+    width: 10.3vh;
+    height: 10.3vh;
 }
 
 .tab {
     width: fit-content;
+    /* position: absolute;
+    top: 14.2vh;
+    float: center; */
     margin: auto;
-    margin-bottom: 40px;
+    margin-bottom: 4.3vh;
     overflow: hidden;
     border: 1px solid white;
     border-style: outset;
-    border-radius: 25px;
+    border-radius: 2.68vh;
 }
 
 .tab button {
     background-color: inherit;
-    width: 100px;
+    width: 6.8vw;
     border: none;
     outline: none;
     cursor: pointer;
-    padding: 14px;
+    padding: 1.437vh;
     transition: 0.3s;
     border-radius: 0;
     color: white;
@@ -256,6 +260,7 @@ li {
 
 
 #undo:hover,
+#redo:hover,
 .flags-left:hover {
     color: black;
     background-color: white;
@@ -271,10 +276,10 @@ h3 {
     position: absolute;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 20px;
+    margin-bottom: 2.059vh;
     left: 0;
     right: 0;
-    top: 210px;
+    top: 19.3vh;
     transition: opacity 3000ms;
 }
 
@@ -290,13 +295,13 @@ h3 {
 
 
 
-body.light-mode{
+body.light-mode {
     background-image: url('../imgs/backgroung-light.jpeg');
     color: black;
 }
 
 .light-mode h1 {
-    text-shadow: 2px 3px 4px rgba(255, 255, 255, 0.75)
+    text-shadow: 0.128vw 0.192vw 0.256vw rgba(255, 255, 255, 0.75)
 }
 
 .light-mode button {
@@ -320,7 +325,7 @@ body.light-mode{
 .light-mode tr,
 .light-mode td {
     border: 1px solid black;
-    width: 28px;
+    width: 21.6px;
 }
 
 .light-mode td:hover {
@@ -336,22 +341,12 @@ body.light-mode{
     background-color: rgb(159, 230, 199);
 }
 
-.light-mode .game-area span iconify-icoy{
-    color: black;
+.light-mode .game-area span {
+    color: rgb(255, 255, 255);
 }
-
-/* .light-mode .selected-cell {
-    background-color: rgb(249, 254, 163);
-    opacity: 0.6;
-}
-
-.light-mode .mine {
-    background-color: rgb(136, 69, 78);
-    opacity: 0.6;
-} */
 
 .light-mode .light-mode li {
-    text-shadow: 2px 3px 4px rgba(255, 255, 255, 0.75);
+    text-shadow: 0.128vw 0.192vw 0.256vw rgba(255, 255, 255, 0.75);
 }
 
 .light-mode .flags-left {
@@ -378,7 +373,7 @@ body.light-mode{
 }
 
 .light-mode #undo:hover,
-.light-mode .flags-left:hover {
+.light-mode #redo:hover {
     color: black;
     background-color: rgb(176, 173, 173);
 }
@@ -391,12 +386,14 @@ body.light-mode{
     background-color: transparent;
 }
 
-.light-mode #start-button:hover {
-    background-color: rgb(137, 134, 134);
+.light-mode #start-button:hover,
+.light-mode .flags-left:hover {
+    background-color: rgb(130, 148, 184);
+    opacity: 0.6;
 }
 
-.light-mode .game-area{
-    text-shadow: 4px 4px 6px 10px white;
+.light-mode .game-area {
+    text-shadow: 0.256vw 0.256vw 0.38vw 0.64vw white;
 }
 
 .light-mode .win {
@@ -404,10 +401,10 @@ body.light-mode{
 }
 
 .light-mode .game-area iconify-icon:hover {
-    box-shadow: 0 4px 2px -2px white;
-    color: rgb(246, 246, 246);
+    box-shadow: 0 2.56vw 1.28vw -1.28vw white;
+    color: rgb(210, 188, 47);
 }
 
-#life iconify-icon:hover{
+#life iconify-icon:hover {
     color: rgba(145, 31, 31);
 }

@@ -167,7 +167,6 @@ function getBestTime(level) {
 // stacks relevant data to gGame.stateStack for undo
 function saveCurrState() {
     const lastBoard = JSON.stringify(gBoard)
-
     const lastGame = {
         level: gGame.level,
         shownCount: gGame.shownCount,
@@ -182,40 +181,41 @@ function saveCurrState() {
     }
     // JSON.stringify(gGame)
 
-    gGame.stateStack.push({
+    gGame.stateStack[++stateStackIdx] = {
         board: lastBoard,
         game: lastGame,
         elGameArea: document.querySelector('.game-area').innerHTML
-    })
+    }
 }
 
 
 
 // pops the last state and renders it
-function restoreLastState() {
+function goToState(stateIdx) {
     if (!gGame.stateStack || !gGame.stateStack.length || !gGame.isOn) return
     if (!isMute) playUtilSound('undo')
-    const lastState = gGame.stateStack.pop()
-    gBoard = JSON.parse(lastState.board)
-    document.querySelector('.game-area').innerHTML = lastState.elGameArea
+    const state = gGame.stateStack.slice(stateIdx)[0]
+    gBoard = JSON.parse(state.board)
+    document.querySelector('.game-area').innerHTML = state.elGameArea
     gGame = {
         isOn: true,
-        level: lastState.game.level,
-        shownCount: lastState.game.shownCount,
-        markedCount: lastState.game.markedCount,
+        level: state.game.level,
+        shownCount: state.game.shownCount,
+        markedCount: state.game.markedCount,
         secsPassed: gGame.secsPassed,
-        minePos: JSON.parse(lastState.game.minePos),
+        minePos: JSON.parse(state.game.minePos),
         startTime: gGame.startTime,
-        life: lastState.game.life,
-        hint: lastState.game.hint,
-        safe: lastState.game.safe,
-        mega: lastState.game.mega,
-        exterminate: lastState.game.exterminate,
+        life: state.game.life,
+        hint: state.game.hint,
+        safe: state.game.safe,
+        mega: state.game.mega,
+        exterminate: state.game.exterminate,
         isHitOn: false,
-        isMegaHintOn: lastState.game.isMegaHintOn,
+        isMegaHintOn: state.game.isMegaHintOn,
         stateStack: gGame.stateStack
     }
     // JSON.parse(lastState.game)
+
 
     const elCells = document.querySelectorAll('.cell')
     for (var i = 0; i < elCells.length; i++) {
@@ -226,16 +226,26 @@ function restoreLastState() {
     renderFlagsLeft()
 }
 
-
-
-// gets a position and array of position and return position's index, or -1 if doesn't exist
-function getIndex(pos, arr) {
-    for (var i = 0; i < arr.length; i++) {
-        if (pos.row === arr[i].row &&
-            pos.col === arr[i].col) return i
-    }
-    return -1
+function undo() {
+    if (stateStackIdx <= 0) return
+    stateStackIdx--
+    goToState(stateStackIdx)
+    // undoStrike = true
 }
+
+function redo() {
+    if (stateStackIdx >= gGame.stateStack.length - 1) return
+    goToState(++stateStackIdx)
+    // compareStates(stateStackIdx)
+}
+
+
+// function compareStates(compareStateIdx) {
+//     const nextState = gGame.stateStack[compareStateIdx-1]
+//     if (!nextState || !nextState.board || stateStackIdx <= 1) return
+//     if (JSON.stringify(gBoard) !== JSON.stringify(nextState.board)) gGame.stateStack.splice(compareStateIdx-1)
+// }
+
 
 
 // returns an array of unmarked mines (for exterminate funciton)
@@ -277,7 +287,6 @@ function playUtilSound(util) {
 // runs the utility a player uses
 function useUtility(util, firstPos = null, secondPos = null) {
     if (!isMute) playUtilSound(util)
-    if (util === 'safe') saveCurrState()
     gGame[util]--
     renderUtils(util)
     var className
@@ -325,6 +334,7 @@ function useUtility(util, firstPos = null, secondPos = null) {
 
         }
     }
+    // saveCurrState()
 }
 
 function toggleLight() {

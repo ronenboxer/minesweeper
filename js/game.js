@@ -2,17 +2,17 @@
 
 //DOM
 const MINE_IMG = `<iconify-icon inline icon="bxs:bomb" width="24"></iconify-icon>`
-const FLAG_IMG = `<iconify-icon icon="charm:flag" width="20px"></iconify-icon>`
-const LOSE_IMG = `<iconify-icon icon="cil:face-dead" width="28px"></iconify-icon>`
-const WIN_IMG = `<iconify-icon icon="akar-icons:trophy" width="30px"></iconify-icon>`
-const START_IMG = `<iconify-icon icon="bx:happy" width="31px"></iconify-icon>`
-const LIFE_IMG = `<iconify-icon inline title="if you see it, you're good" icon="bi:heart-fill" width="24px"></iconify-icon>`
-const HINT_IMG = `<iconify-icon inline title="click here, and then on any cell"icon="academicons:ideas-repec" width="24px" onclick="onHint()"></iconify-icon>`
-const MEGA_HINT_IMG = `<iconify-icon inline title="click here, then pick 2 cells" icon="mdi:magnify-expand" width="24" onclick="onMegaHint()"></iconify-icon>`
-const EXTERMINATE_IMG = `<iconify-icon inline title="get rid of up to 3 mines" icon="fa6-solid:gun" width="24" onclick="exterminate()" id="exterminate"></iconify-icon>`
-const SAFE_IMG = `<iconify-icon inline title="show a safe cell" icon="ion:help-buoy-sharp" width="24px" onclick="useUtility('safe')"></iconify-icon>`
-const LIGHT_MODE = `<iconify-icon inline title="is it too dark?" icon="cil:sun" width="24" onclick="toggleLight('')"></iconify-icon>`
-const DARK_MODE = `<iconify-icon inline title="now it's too damn bright!" icon="bi:moon-stars" width="24" onclick="toggleLight('')"></iconify-icon>`
+const FLAG_IMG = `<iconify-icon icon="charm:flag" width="1.2vw"></iconify-icon>`
+const LOSE_IMG = `<iconify-icon icon="cil:face-dead" width="2vw"></iconify-icon>`
+const WIN_IMG = `<iconify-icon icon="akar-icons:trophy" width="2vw"></iconify-icon>`
+const START_IMG = `<iconify-icon icon="bx:happy" width="2vw"></iconify-icon>`
+const LIFE_IMG = `<iconify-icon inline title="if you see it, you're good" icon="bi:heart-fill" width="1.5vw"></iconify-icon>`
+const HINT_IMG = `<iconify-icon inline title="click here, and then on any cell"icon="academicons:ideas-repec" width="1.5vw" onclick="onHint()"></iconify-icon>`
+const MEGA_HINT_IMG = `<iconify-icon inline title="click here, then pick 2 cells" icon="mdi:magnify-expand" width="1.5vw" onclick="onMegaHint()"></iconify-icon>`
+const EXTERMINATE_IMG = `<iconify-icon inline title="get rid of up to 3 mines" icon="fa6-solid:gun" width="1.5vw" onclick="exterminate()" id="exterminate"></iconify-icon>`
+const SAFE_IMG = `<iconify-icon inline title="show a safe cell" icon="ion:help-buoy-sharp" width="1.5vw" onclick="useUtility('safe')"></iconify-icon>`
+const LIGHT_MODE = `<iconify-icon inline title="is it too dark?" icon="cil:sun" width="1.5vw" onclick="toggleLight('')"></iconify-icon>`
+const DARK_MODE = `<iconify-icon inline title="now it's too damn bright!" icon="bi:moon-stars" width="1.5vw" onclick="toggleLight('')"></iconify-icon>`
 const EL_START_BUTTON = document.querySelector('#start-button')
 const EL_MANUAL_BUTTON = document.querySelector('#manual')
 const EL_BEST = document.querySelector(`#best-time span`)
@@ -33,6 +33,8 @@ var isProccessing
 var isMute = false
 var isManualPositionOn = false
 var isDark = true
+var stateStackIdx
+var undoStrike
 
 // sounds
 const MEGA_HINT_SOUND = new Audio(`sound/win.wav`)
@@ -88,7 +90,7 @@ function initGame(level = null) {
         megaHintFirstPos: null,
 
         //undo stack
-        stateStack: [],
+        stateStack: []
     }
 
     //DOM
@@ -110,31 +112,37 @@ function initGame(level = null) {
     renderUtils('safe')
     renderUtils('mega')
     renderUtils('exterminate')
+    stateStackIdx = -1
+    undoStrike = false
+    // saveCurrState()
 }
 
 
 
 // sets level according to user choice
-function onSetLevel(level, element = null) {
-    if (gGame.level && gGame.level) document.getElementById(gGame.level).classList.remove(`active`)
+function onSetLevel(level) {
+    if (gGame.level) document.getElementById(gGame.level).classList.remove(`active`)
+    if (isManualPositionOn) {
+        renderValue(EL_MANUAL_BUTTON, 'manual') // update button
+        EL_MANUAL_BUTTON.classList.remove('active')
+    }
     switch (level) {
         case 'easy':
-            gLevel = { SIZE: 4, MINES: 2}
+            gLevel = { SIZE: 4, MINES: 2 }
             break
         case 'medium':
-            gLevel = { SIZE: 8, MINES: 14}
+            gLevel = { SIZE: 8, MINES: 14 }
             break
         case 'hard':
-            gLevel = { SIZE: 12, MINES: 32}
+            gLevel = { SIZE: 12, MINES: 32 }
             break
         case '7boom':
             if (!gLevel) return
             onSevenBoom()
             return
-            break
         case 'manual':
             if (!gLevel) return
-            onManualPosition(element)
+            onManualPosition()
             return
         case defualt: return null
     }
@@ -269,13 +277,12 @@ function revealAllMines() {
 
 // if a player loses a life, this function shows the mine they just stepped on, and updates model and DOM
 function revealMine(elCell, row, col) {// if player has no more life left, reveal all mines and end game
+    gGame.life--
+    renderUtils('life')
     if (!gGame.life) revealAllMines()
     else {
         if (!isMute) playUtilSound('life')
-        gGame.life--
-        renderUtils('life')
         gGame.markedCount++
-        // gGame.shownCount--
         const mineCell = gBoard[row][col]
         mineCell.isShown = true
         mineCell.isMarked = true
@@ -297,7 +304,9 @@ function checkGameOver() {
         renderImg(EL_START_BUTTON, WIN_IMG)
         if (!isMute) playUtilSound('win')
         gameOver()
+        return true
     }
+    return false
 }
 
 
@@ -336,16 +345,16 @@ function onSevenBoom() {
 
 // toggle manual position feature:
 // first click is to position, second to stop positioning
-function onManualPosition(elButton, event = null) {
+function onManualPosition() {
     if (!gLevel) return
     // mode turned on, reset board
     if (!isManualPositionOn) {
         initGame(gGame.level)
         renderImg(EL_FLAGS_LEFT, FLAG_IMG)
         isManualPositionOn = true
-        elButton.classList.add('active')
+        EL_MANUAL_BUTTON.classList.add('active')
         document.getElementById(gGame.level).classList.remove(`active`)
-        renderValue(elButton, 'all done') // update button
+        renderValue(EL_MANUAL_BUTTON, 'all done') // update button
     } else { // player done positioning mines
         if (gGame.minePos.length) { // making sure player indeed placed mines
             for (var i = 0; i < gGame.minePos.length; i++) {
@@ -363,8 +372,9 @@ function onManualPosition(elButton, event = null) {
             document.getElementById(gGame.level).classList.add(`active`)
             initGame(gGame.level) // otherwise start a regular game
         }
-        renderValue(elButton, 'manual') // update button
-        elButton.classList.remove('active')
+        renderValue(EL_MANUAL_BUTTON, 'manual') // update button
+        EL_MANUAL_BUTTON.classList.remove('active')
+        document.getElementById(gGame.level).classList.add(`active`)
     }
 
 }
@@ -374,7 +384,9 @@ function onManualPosition(elButton, event = null) {
 // to let the cellClicked functions know not to step on cell
 function onHint() {
     if (!gGame.isOn || gGame.isMegaHintOn) return
-    saveCurrState()
+    // undoStrike = false
+    // gGame.stateStack.splice(stateStackIdx + 1)
+    // saveCurrState()
     gGame.isHitOn = true
 }
 
@@ -383,8 +395,10 @@ function onHint() {
 // updates model when player uses a mega hint, it turns isMegaHintOn mode on
 // to let cellClicked function know not to step on two next cells
 function onMegaHint() {
-    if (!gGame.isOn || !gGame.mega || gGame.megaHintFirstPos) return
-    saveCurrState()
+    if (!gGame.isOn || gGame.megaHintFirstPos) return
+    // undoStrike = false
+    // gGame.stateStack.splice(stateStackIdx + 1)
+    // saveCurrState()
     if (gGame.isHitOn) gGame.isHitOn = false
     gGame.isMegaHintOn = true
 }
@@ -414,7 +428,7 @@ function showMegaHint(firstPos, secondPos) {
     elSecondCell.classList.toggle('selected-cell')
     useUtility('mega', { row: rowStart, col: colStart }, { row: rowEnd, col: colEnd })
     gGame.isMegaHintOn = false
-    gGame.mega--
+    // gGame.mega--
 }
 
 
@@ -423,7 +437,8 @@ function showMegaHint(firstPos, secondPos) {
 function exterminate() {
     // lets plyaer use this feature once, only when game is on
     if (!gGame.exterminate || !gGame.isOn) return
-    saveCurrState()
+    // undoStrike = false
+    // gGame.stateStack.splice(stateStackIdx + 1)
     // plays audio if mute mode is off
     if (!isMute) playUtilSound('exterminate')
     gGame.exterminate--
@@ -447,13 +462,14 @@ function exterminate() {
     for (var i = 0; i < unmarkedMinesCount && i < 3; i++) {
         const randomIdx = getRandomInt(0, minePos.length)
         const currMinePos = minePos.splice(randomIdx, 1)[0]
-        const idxInGgame = getIndex(currMinePos, gGame.minePos)
+        const mineIdx = gGame.minePos.findIndex(mine => mine.row === currMinePos.row && mine.col === currMinePos.col)
         gBoard[currMinePos.row][currMinePos.col].isMine = false;
-        gGame.minePos.splice(idxInGgame, 1)
+        gGame.minePos.splice(mineIdx, 1)
     }
 
     // updating model and DOM if necessary
     setMinesNegsCount(gBoard)
     renderFlagsLeft()
-    checkGameOver()
+     if (checkGameOver()) return
+    saveCurrState()
 }
